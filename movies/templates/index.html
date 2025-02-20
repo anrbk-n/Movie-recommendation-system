@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Movies List</h1>
+        <form method="POST" action="{{ url_for('search') }}" id="search-form">
+            <input type="text" name="search_query" placeholder="Search for a movie..." required>
+            <button type="submit">Search</button>
+        </form>
+    </header>
+
+    <div class="movie-list" id="movie-list">
+        {% for movie in movies %}
+            <div class="movie">
+                <img src="{{ movie['poster_path'] }}" alt="Poster" class="movie-poster">
+                <h2>{{ movie['title'] }}</h2>
+                <a href="{{ url_for('movie_details', movie_id=movie['id']) }}" class="view-details-btn">View Details</a>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if suggestions %}
+        <div class="suggestions">
+            <h2>Did you mean?</h2>
+            <ul>
+                {% for suggestion in suggestions %}
+                    <li><a href="{{ url_for('movie_details', movie_id=suggestion[1]) }}">{{ suggestion[0] }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <!-- Кнопка для загрузки следующих фильмов -->
+    <button id="load-more-btn" data-start="10" onclick="loadMoreMovies()">Show More</button>
+
+    <script>
+        // Функция для загрузки новых фильмов
+        function loadMoreMovies() {
+            let start = document.getElementById('load-more-btn').getAttribute('data-start');
+
+            fetch(`/load_more?start=${start}`, {
+                method: 'GET',
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('movie-list').innerHTML += data;
+                let newStart = parseInt(start) + 10;
+                document.getElementById('load-more-btn').setAttribute('data-start', newStart);
+            })
+            .catch(error => console.error('Error loading more movies:', error));
+        }
+    </script>
+</body>
+</html>
