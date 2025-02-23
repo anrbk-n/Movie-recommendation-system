@@ -1,28 +1,24 @@
 from flask import Flask, render_template, request
 import pandas as pd
-from fuzzywuzzy import process  # Для поиска по ошибочным названиям
-from transformers import pipeline  # Для исправления текста с использованием модели T5
+from fuzzywuzzy import process  
+from transformers import pipeline  
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy.sparse import hstack
 
 app = Flask(__name__)
 
-# Загрузка данных
 df = pd.read_csv('C:/Users/Niyaz/Downloads/clean_tmdb_movies.csv')
 
-# Функция для извлечения жанров
 def extract_genres(genre_names):
     return genre_names.split(',') if genre_names else ['Unknown']
 
-# Функция для исправления ошибок с использованием модели T5
 corrector = pipeline("text2text-generation", model="t5-small")
 
 def correct_text(text):
     corrected_text = corrector(text, max_length=50)[0]['generated_text']
     return corrected_text
 
-# Функция для транслитерации с русского на латиницу
 def transliterate_to_english(input_text):
     translit_map = {
         'й': 'q', 'ц': 'w', 'у': 'e', 'к': 'r', 'е': 't', 'н': 'y', 'г': 'u', 'ш': 'i', 'щ': 'o', 'з': 'p', 'х': '[', 'ъ': ']',
@@ -35,7 +31,6 @@ def transliterate_to_english(input_text):
     translated_text = ''.join([translit_map.get(char, char) for char in input_text])
     return translated_text
 
-# Функция для поиска похожих фильмов с исправлением ошибок
 def fuzzy_search_movie(user_input, df, limit=10, threshold=70):
     user_input_transliterated = transliterate_to_english(user_input)
     corrected_input = correct_text(user_input_transliterated)
@@ -45,11 +40,11 @@ def fuzzy_search_movie(user_input, df, limit=10, threshold=70):
     filtered_matches = [match for match in matches if match[1] >= threshold]
     matched_movies = df[df['title'].isin([match[0] for match in filtered_matches])]
     return matched_movies, filtered_matches
-# Главная страница
+#MAIN
 @app.route('/', methods=['GET', 'POST'])
 def index():
     movies_data = []
-    for _, row in df.head(10).iterrows():  # Отображаем только 8 фильмов
+    for _, row in df.head(10).iterrows():  
         movie = {
             'id': row['id'],
             'title': row['title'],
@@ -62,7 +57,6 @@ def index():
         movies_data.append(movie)
     return render_template('index.html', movies=movies_data)
 
-# Маршрут для поиска фильмов
 @app.route('/search', methods=['POST'])
 def search():
     search_query = request.form['search_query']
@@ -81,7 +75,6 @@ def search():
         movies_data.append(movie)
     return render_template('results.html', movies=movies_data, suggestions=suggestions)
 
-# Маршрут для загрузки дополнительных фильмов
 @app.route('/load_more', methods=['GET'])
 def load_more():
     start = int(request.args.get('start', 10))
@@ -100,7 +93,6 @@ def load_more():
         movies_data.append(movie)
     return render_template('movie_part.html', movies=movies_data)
 
-# Страница подробностей фильма
 def create_combined_features(row):
     return (
             str(row['genre_names'] or '') + ' ' +
@@ -114,30 +106,25 @@ def create_combined_features(row):
     )
 
 
-# Функция для векторизации текста и жанров
+# vectorize
 def vectorize_features(df):
-    # Векторизация текста
     vectorizer = TfidfVectorizer(stop_words='english', max_features=1000)
     feature_matrix = vectorizer.fit_transform(df['combined_features'])
 
-    # Векторизация жанров
     genre_vectorizer = TfidfVectorizer(stop_words='english', max_features=10)
     genre_matrix = genre_vectorizer.fit_transform(df['genre_names'])
 
-    # Объединение признаков
     feature_matrix = hstack([feature_matrix, genre_matrix])
 
     return feature_matrix
 df['combined_features'] = df.apply(create_combined_features, axis=1)
 
-# Векторизация
 feature_matrix = vectorize_features(df)
 
-# Косинусное сходство
+#cosine_sim
 cosine_sim = cosine_similarity(feature_matrix, feature_matrix)
 
 
-# Функция для получения рекомендаций
 def get_recommendations(title, cosine_sim=cosine_sim):
     title = title.lower()  # Convert to lowercase
 
@@ -189,9 +176,8 @@ def movie_details(movie_id):
 
     recommendations = get_recommendations(movie['title'])
 
-    # Если рекомендации получены
     if isinstance(recommendations, str):
-        print(recommendations)  # Если рекомендаций нет, выводим сообщение в консоль
+        print(recommendations)  
         return render_template('movie_details.html', movie=movie_data, recommended_movies=[])
     else:
         return render_template('movie_details.html', movie=movie_data, recommended_movies=recommendations)
