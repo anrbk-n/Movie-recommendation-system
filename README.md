@@ -11,25 +11,22 @@ The project combines Natural Language Processing (NLP) with recommendation syste
 
 * **🧠 Automatic Error Correction:** Utilizes the T5 model to detect and fix misspelled movie titles.
 * **🔍 Smart Search:** Allows users to input titles with typos; the system finds the closest match from the dataset.
-* **🎬 Dynamic Recommendations:** Suggests movies similar to the found (corrected) movie based on content similarity.
-* **💻 User-Friendly Web Interface:** A simple and intuitive interface built with Flask, HTML, and JavaScript.
-* **⚡ Real-Time Results:** Dynamically fetches and displays relevant movie suggestions as the user types in the search bar.
+* **🎬 Dynamic Recommendations:** Suggests movies similar to the found movie based on content similarity.
+* **💻 User-Friendly Web Interface:** A simple and intuitive interface built with Flask.
 * **➕ "Show More" Button:** Enables users to view additional recommendation options.
-* **(Optional) Fetch Additional Information:** Potential integration with APIs (like TMDB) to retrieve posters, ratings, and descriptions (if implemented).
 
 ## Technology Stack 🛠️
 
 * **Backend:** Python, Flask
-* **NLP/ML:** T5 Model (likely via Hugging Face `transformers`)
+* **NLP/ML:** T5 Model 
 * **Data Handling:** Pandas (likely)
 * **Recommendation Logic:** Scikit-learn (potentially for TF-IDF/Cosine Similarity in content-based filtering)
-* **Data Storage:** (Specify here how movie data is stored - e.g., CSV file, Database)
   
 ## How It Works 🤔
 
 1.  **Input & Correction:** The user enters a movie title (potentially misspelled) into the web interface.
 2.  **T5 Correction:** The input string is passed to the T5 model, which attempts to correct any spelling errors, outputting the most likely intended movie title.
-3.  **Content-Based Filtering:** The corrected movie title is used to find its representation (e.g., genre, plot keywords, actors) in the dataset. The system then calculates the similarity (e.g., using cosine similarity on TF-IDF vectors) between this movie and others in the dataset.
+3.  **Content-Based Filtering:** The corrected movie title is used to find its representation in the dataset. The system then calculates the similarity between this movie and others in the dataset.
 4.  **Recommendation:** Movies with the highest similarity scores are returned as recommendations.
 5.  **Display:** The recommendations are displayed to the user via the web interface.
 
