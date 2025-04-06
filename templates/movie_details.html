@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ movie['title'] }} - Movie Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <a href="{{ url_for('index') }}" class="back-btn">&larr; Back to Movies</a>
+        <h1>{{ movie['title'] }}</h1>
+    </header>
+
+    <div class="backdrop"></div>
+
+    <div class="movie-details">
+        <div class="movie-poster-details">
+            <img src="{{ movie['poster_path'] }}" alt="Poster">
+        </div>
+
+        <div class="movie-info">
+            <h2>Overview</h2>
+            <p>{{ movie['overview'] }}</p>
+
+            <p><strong>Release Date:</strong> {{ movie['release_date'] }}</p>
+            <p><strong>Genres:</strong> {{ movie['genres'] | join(', ') }}</p>
+            <p><strong>Rating:</strong> {{ movie['vote_average'] }}</p>
+
+            <!--  add -->
+            <h3>Additional Information</h3>
+            <p><strong>Original Language:</strong> {{ movie['original_language'] }}</p>
+            <p><strong>Popularity:</strong> {{ movie['popularity'] }}</p>
+            <p><strong>Vote Count:</strong> {{ movie['vote_count'] }}</p>
+            <p><strong>Production Companies:</strong> {{ movie['production_companies'] }}</p>
+            <p><strong>Production Countries:</strong> {{ movie['production_countries'] }}</p>
+            <p><strong>Runtime:</strong> {{ movie['runtime'] }} minutes</p>
+            <p><strong>Spoken Languages:</strong> {{ movie['spoken_languages'] }}</p>
+            <p><strong>Budget:</strong> ${{ movie['budget'] }}</p>
+            <p><strong>Revenue:</strong> ${{ movie['revenue'] }}</p>
+            <p><strong>Status:</strong> {{ movie['status'] }}</p>
+            <p><strong>Tagline:</strong> {{ movie['tagline'] }}</p>
+            <p><strong>IMDb ID:</strong> <a href="https://www.imdb.com/title/{{ movie['imdb_id'] }}/" target="_blank">{{ movie['imdb_id'] }}</a></p>
+        </div>
+    </div>
+
+    <div class="recommended-movies-header">
+        <h2>You May Also Like</h2>
+    </div>
+
+    <!-- rec system -->
+    {% include 'recommendations.html' %}

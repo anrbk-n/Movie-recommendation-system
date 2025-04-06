@@ -1,0 +1,23 @@
+<div class="recommended-movies">
+    {% if recommended_movies %}
+        {% for recommended_movie in recommended_movies %}
+        <div class="recommended-movie">
+            <a href="{{ url_for('movie_details', movie_id=recommended_movie['id']) }}">
+                {% if recommended_movie['poster_path'] %}
+                    <div class="movie-poster-details">
+                        <img src="{{ recommended_movie['poster_path'] }}" alt="{{ recommended_movie['title'] }} poster" class="movie-post">
+                    </div>
+                {% else %}
+                    <!-- Используем изображение по умолчанию, если poster_path пустой -->
+                    <div class="movie-poster-details">
+                        <img src="{{ url_for('static', filename='Poster_not_available.jpg') }}" alt="No Poster Available" class="movie-post">
+                    </div>
+                {% endif %}
+                <h3>{{ recommended_movie['title'] }}</h3>
+            </a>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No recommendations available.</p>
+    {% endif %}
+</div>
