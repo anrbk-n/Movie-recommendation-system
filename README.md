@@ -19,7 +19,6 @@ The project combines Natural Language Processing (NLP) with recommendation syste
 
 * **Backend:** Python, Flask
 * **NLP/ML:** T5 Model 
-* **Data Handling:** Pandas (likely)
 * **Recommendation Logic:** Scikit-learn (potentially for TF-IDF/Cosine Similarity in content-based filtering)
   
 ## How It Works 🤔
