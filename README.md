@@ -9,10 +9,10 @@ The project combines Natural Language Processing (NLP) with recommendation syste
 
 ## Key Features 
 
-Automatic Error Correction: Utilizes the T5 model to detect and fix misspelled movie titles.
-Smart Search: Allows users to input titles with typos; the system finds the closest match from the dataset.
-Dynamic Recommendations: Suggests movies similar to the found movie based on content similarity.
-User-Friendly Web Interface: A simple and intuitive interface built with Flask.
+* Automatic Error Correction: Utilizes the T5 model to detect and fix misspelled movie titles.
+* Smart Search: Allows users to input titles with typos; the system finds the closest match from the dataset.
+* Dynamic Recommendations: Suggests movies similar to the found movie based on content similarity.
+* User-Friendly Web Interface: A simple and intuitive interface built with Flask.
 
 
 ## How It Works 
